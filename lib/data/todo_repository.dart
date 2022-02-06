@@ -8,4 +8,5 @@ class TodoRepository {
 
   Future<List<TodoModel>> getTodoList() => _todoDao.getTodoList();
   Future<int> createTodo(TodoModel todo) => _todoDao.createTodo(todo);
+  Future<int> deleteTodo(TodoModel todo) => _todoDao.deleteTodo(todo);
 }

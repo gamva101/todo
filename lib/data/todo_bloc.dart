@@ -23,4 +23,9 @@ class TodoBloc {
     await _todoRepository.createTodo(todo);
     getTodoList();
   }
+
+  void deleteTodo(TodoModel todo) async {
+    await _todoRepository.deleteTodo(todo);
+    getTodoList();
+  }
 }

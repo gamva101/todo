@@ -5,6 +5,7 @@ class TodoModel {
   final DateTime _createdTime;
   TodoModel(this._id, this._title, this._createdTime, this._state);
 
+  int? getId() => _id;
   String getTitle() => _title;
   DateTime getCreatedTime() => _createdTime;
   TodoState getTodoState() => _state;

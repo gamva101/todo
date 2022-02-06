@@ -4,12 +4,19 @@ import 'package:todo/data/todo_dao.dart';
 import 'package:todo/data/todo_repository.dart';
 import 'package:todo/todo_model.dart';
 import 'package:intl/intl.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
-class TodoListPage extends StatelessWidget {
+class TodoListPage extends StatefulWidget {
+  @override
+  State<StatefulWidget> createState() => _TodoListPageState();
+}
+
+class _TodoListPageState extends State<TodoListPage> {
   static const String TODO_DATE_FORMAT = 'yyyy-MM-dd HH:mm';
   final TextEditingController _todoTitleController = TextEditingController();
   final TodoDao _todoDao = TodoDao();
   final TodoBloc _todoBloc = TodoBloc(TodoRepository(TodoDao()));
+  bool isEdit = false;
 
   @override
   Widget build(BuildContext context) {
@@ -57,8 +64,15 @@ class TodoListPage extends StatelessWidget {
       elevation: 4.0,
       shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.all(Radius.circular(8.0))),
-      child: Container(
-          padding: EdgeInsets.all(16.0), child: _createTodoItemRow(todoModel)),
+      child: GestureDetector(
+          onLongPress: () {
+            setState(() {
+              isEdit = !isEdit;
+            });
+          },
+          child: Container(
+              padding: EdgeInsets.all(16.0),
+              child: _createTodoItemRow(todoModel))),
     );
   }
 
@@ -68,7 +82,13 @@ class TodoListPage extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         _createTodoItemContentwidget(todoModel),
-        Icon(Icons.keyboard_arrow_right, color: Colors.blue)
+        GestureDetector(
+          onTap: () {
+            isEdit ? _deleteTodo(todoModel) : _editTodo();
+          },
+          child: Icon(isEdit ? Icons.delete : Icons.keyboard_arrow_right,
+              color: Colors.blue),
+        ),
       ],
     );
   }
@@ -134,4 +154,10 @@ class TodoListPage extends StatelessWidget {
     TodoModel todoModel = TodoModel(0, title, DateTime.now(), TodoState.todo);
     _todoBloc.addTodo(todoModel);
   }
+
+  void _deleteTodo(TodoModel todoModel) async {
+    _todoBloc.deleteTodo(todoModel);
+  }
+
+  _editTodo() {}
 }

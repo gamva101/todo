@@ -19,4 +19,11 @@ class TodoDao {
         : [];
     return todoList;
   }
+
+  Future<int> deleteTodo(TodoModel todo) async {
+    final db = await dbProvider.database;
+    final result =
+        db.delete(todoTable, where: 'id = ?', whereArgs: [todo.getId()]);
+    return result;
+  }
 }
