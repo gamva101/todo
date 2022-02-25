@@ -10,7 +10,7 @@ class TodoListApp extends StatefulWidget {
 class _TodoListAppState extends State<TodoListApp> {
   final List<TabItem> _tabItems = [
     TabItem("Todo", Icons.clear),
-    TabItem("In Progress", Icons.loop),
+    TabItem("Todo History", Icons.loop),
     TabItem("Done", Icons.check)
   ];
 

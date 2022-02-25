@@ -33,6 +33,7 @@ class DatabaseProvider {
     await database.execute("CREATE TABLE $todoTable ("
         "id INTEGER PRIMARY KEY, "
         "title TEXT, "
+        "description TEXT,"
         "state INTEGER, "
         "created_time INTEGER"
         ")");

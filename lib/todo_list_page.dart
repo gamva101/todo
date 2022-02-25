@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:todo/data/todo_bloc.dart';
 import 'package:todo/data/todo_dao.dart';
@@ -5,6 +7,7 @@ import 'package:todo/data/todo_repository.dart';
 import 'package:todo/todo_model.dart';
 import 'package:intl/intl.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:todo/ui/add/add.dart';
 
 class TodoListPage extends StatefulWidget {
   @override
@@ -13,7 +16,6 @@ class TodoListPage extends StatefulWidget {
 
 class _TodoListPageState extends State<TodoListPage> {
   static const String TODO_DATE_FORMAT = 'yyyy-MM-dd HH:mm';
-  final TextEditingController _todoTitleController = TextEditingController();
   final TodoDao _todoDao = TodoDao();
   final TodoBloc _todoBloc = TodoBloc(TodoRepository(TodoDao()));
   bool isEdit = false;
@@ -27,11 +29,22 @@ class _TodoListPageState extends State<TodoListPage> {
     );
   }
 
+  Widget _createFloatingButton(BuildContext context) {
+    return FloatingActionButton(
+        onPressed: () => Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => AddPage(_todoBloc,
+                    TodoModel(null, '', '', DateTime.now(), TodoState.todo)))),
+        child: Icon(Icons.add, color: Colors.white));
+  }
+
   Widget _createTodoListStreamBuilder() {
     return StreamBuilder(
         builder:
             (BuildContext context, AsyncSnapshot<List<TodoModel>> snapshot) {
           if (snapshot.hasData) {
+            print('stream update');
             if (snapshot.data!.length > 0) {
               return _createTodoList(snapshot.data!);
             } else {
@@ -69,6 +82,10 @@ class _TodoListPageState extends State<TodoListPage> {
             setState(() {
               isEdit = !isEdit;
             });
+            log('long press');
+          },
+          onTap: () {
+            log('onTap');
           },
           child: Container(
               padding: EdgeInsets.all(16.0),
@@ -84,7 +101,14 @@ class _TodoListPageState extends State<TodoListPage> {
         _createTodoItemContentwidget(todoModel),
         GestureDetector(
           onTap: () {
-            isEdit ? _deleteTodo(todoModel) : _editTodo();
+            log('gesture onTap');
+            log('isEdit ' + isEdit.toString());
+            if (!isEdit) {
+              _editTodo(todoModel);
+            } else {
+              _deleteTodo(todoModel);
+            }
+            // _deleteTodo(todoModel) : _editTodo();
           },
           child: Icon(isEdit ? Icons.delete : Icons.keyboard_arrow_right,
               color: Colors.blue),
@@ -107,57 +131,12 @@ class _TodoListPageState extends State<TodoListPage> {
     );
   }
 
-  Widget _createFloatingButton(BuildContext context) {
-    return FloatingActionButton(
-        onPressed: () => _openAddtodoDialog(context),
-        child: Icon(Icons.add, color: Colors.white));
-  }
-
-  void _openAddtodoDialog(BuildContext context) {
-    showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10.0),
-            ),
-            title: Text(
-              "Input todo",
-              style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 24.0,
-                  color: Colors.blue),
-            ),
-            content: TextField(controller: _todoTitleController),
-            actions: [
-              TextButton(
-                  onPressed: () {
-                    _todoTitleController.text = "";
-                    Navigator.pop(context);
-                  },
-                  child: new Text('Cancel',
-                      style: TextStyle(fontSize: 16.0, color: Colors.blue))),
-              TextButton(
-                  onPressed: () {
-                    _addNewTodo(_todoTitleController.text);
-                    _todoTitleController.text = "";
-                    Navigator.pop(context);
-                  },
-                  child: new Text('Ok',
-                      style: TextStyle(fontSize: 16.0, color: Colors.blue))),
-            ],
-          );
-        });
-  }
-
-  void _addNewTodo(String title) async {
-    TodoModel todoModel = TodoModel(0, title, DateTime.now(), TodoState.todo);
-    _todoBloc.addTodo(todoModel);
-  }
-
   void _deleteTodo(TodoModel todoModel) async {
     _todoBloc.deleteTodo(todoModel);
   }
 
-  _editTodo() {}
+  void _editTodo(TodoModel todoModel) {
+    Navigator.push(context,
+        MaterialPageRoute(builder: (context) => AddPage(_todoBloc, todoModel)));
+  }
 }

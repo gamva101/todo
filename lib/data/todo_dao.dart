@@ -10,10 +10,17 @@ class TodoDao {
     return result;
   }
 
+  Future<int> updateTodo(TodoModel todoModel) async {
+    final db = await dbProvider.database;
+    final result = db.update(todoTable, todoModel.toDatabaseJson(),
+        where: 'id=?', whereArgs: [todoModel.getId()]);
+    return result;
+  }
+
   Future<List<TodoModel>> getTodoList() async {
     final db = await dbProvider.database;
-
-    List<Map<String, dynamic>> result = await db.query(todoTable);
+    List<Map<String, dynamic>> result =
+        await db.query(todoTable, orderBy: 'created_time DESC');
     List<TodoModel> todoList = result.isNotEmpty
         ? result.map((item) => TodoModel.fromDatabaseJson(item)).toList()
         : [];

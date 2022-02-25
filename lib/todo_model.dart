@@ -1,26 +1,32 @@
 class TodoModel {
   int? _id;
   String _title;
+  String _description;
   late TodoState _state;
   final DateTime _createdTime;
-  TodoModel(this._id, this._title, this._createdTime, this._state);
+  TodoModel(
+      this._id, this._title, this._description, this._createdTime, this._state);
 
   int? getId() => _id;
   String getTitle() => _title;
+  String getDescription() => _description;
   DateTime getCreatedTime() => _createdTime;
   TodoState getTodoState() => _state;
 
   String setTitle(String title) => _title = title;
+  String setDescription(String description) => _description = description;
   TodoState setTodoState(TodoState state) => _state = state;
 
   factory TodoModel.fromDatabaseJson(Map<String, dynamic> data) => TodoModel(
       data['id'],
       data['title'],
+      data['description'],
       DateTime.fromMillisecondsSinceEpoch(data['created_time'] as int),
       getTodoStateByValue(data['state'] as int));
 
   Map<String, dynamic> toDatabaseJson() => {
         'title': this._title,
+        'description': this._description,
         'created_time': this._createdTime.millisecondsSinceEpoch,
         'state': getTodoStateValue(_state)
       };
