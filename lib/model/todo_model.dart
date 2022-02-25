@@ -1,3 +1,5 @@
+import 'package:todo/model/todo_state.dart';
+
 class TodoModel {
   int? _id;
   String _title;
@@ -31,8 +33,6 @@ class TodoModel {
         'state': getTodoStateValue(_state)
       };
 }
-
-enum TodoState { todo, inProgress, done }
 
 int getTodoStateValue(TodoState state) {
   switch (state) {

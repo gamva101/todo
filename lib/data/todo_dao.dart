@@ -1,5 +1,5 @@
 import 'package:todo/data/database.dart';
-import 'package:todo/todo_model.dart';
+import 'package:todo/model/todo_model.dart';
 
 class TodoDao {
   final dbProvider = DatabaseProvider.provder;

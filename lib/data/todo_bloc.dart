@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:todo/data/todo_repository.dart';
-import 'package:todo/todo_model.dart';
+import 'package:todo/model/todo_model.dart';
 
 class TodoBloc {
   final TodoRepository _todoRepository;

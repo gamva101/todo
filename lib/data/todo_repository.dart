@@ -1,5 +1,5 @@
 import 'package:todo/data/todo_dao.dart';
-import 'package:todo/todo_model.dart';
+import 'package:todo/model/todo_model.dart';
 
 class TodoRepository {
   final TodoDao _todoDao;

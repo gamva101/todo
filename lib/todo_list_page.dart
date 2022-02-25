@@ -1,12 +1,12 @@
 import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:todo/data/todo_bloc.dart';
 import 'package:todo/data/todo_dao.dart';
 import 'package:todo/data/todo_repository.dart';
-import 'package:todo/todo_model.dart';
+import 'package:todo/model/todo_model.dart';
 import 'package:intl/intl.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:todo/model/todo_state.dart';
 import 'package:todo/ui/add/add.dart';
 
 class TodoListPage extends StatefulWidget {
@@ -125,6 +125,8 @@ class _TodoListPageState extends State<TodoListPage> {
         Text(todoModel.getTitle(),
             style: TextStyle(fontSize: 24.0, color: Colors.blue)),
         Divider(thickness: 8.0, height: 8.0, color: Colors.transparent),
+        Text(todoModel.getDescription(),
+            style: TextStyle(fontSize: 18.0, color: Colors.grey)),
         Text(DateFormat(TODO_DATE_FORMAT).format(todoModel.getCreatedTime()),
             style: TextStyle(fontSize: 18.0, color: Colors.blueGrey)),
       ],

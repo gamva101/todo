@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:todo/todo_list_page.dart';
-import 'package:todo/todo_model.dart';
 
 class TodoListApp extends StatefulWidget {
   @override
@@ -10,7 +9,7 @@ class TodoListApp extends StatefulWidget {
 class _TodoListAppState extends State<TodoListApp> {
   final List<TabItem> _tabItems = [
     TabItem("Todo", Icons.clear),
-    TabItem("Todo History", Icons.loop),
+    TabItem("In Progress", Icons.loop),
     TabItem("Done", Icons.check)
   ];
 
