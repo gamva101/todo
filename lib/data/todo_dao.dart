@@ -1,5 +1,8 @@
+import 'dart:developer';
+
 import 'package:todo/data/database.dart';
 import 'package:todo/model/todo_model.dart';
+import 'package:todo/model/todo_state.dart';
 
 class TodoDao {
   final dbProvider = DatabaseProvider.provder;
@@ -21,6 +24,22 @@ class TodoDao {
     final db = await dbProvider.database;
     List<Map<String, dynamic>> result =
         await db.query(todoTable, orderBy: 'created_time DESC');
+    List<TodoModel> todoList = result.isNotEmpty
+        ? result.map((item) => TodoModel.fromDatabaseJson(item)).toList()
+        : [];
+    return todoList;
+  }
+
+  Future<List<TodoModel>> getTodoListByState(TodoState state) async {
+    final db = await dbProvider.database;
+    // List<Map<String, dynamic>> result =
+    //     await db.query(todoTable, orderBy: 'created_time DESC');
+    log('whereArgs ' + state.toString());
+    int stateValue = getTodoStateValue(state);
+    List<Map<String, dynamic>> result = await db.query(todoTable,
+        orderBy: 'created_time DESC',
+        where: 'state = ?',
+        whereArgs: [stateValue]);
     List<TodoModel> todoList = result.isNotEmpty
         ? result.map((item) => TodoModel.fromDatabaseJson(item)).toList()
         : [];

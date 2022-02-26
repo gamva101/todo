@@ -1,1 +1,1 @@
-enum TodoState { todo, inProgress, done }
+enum TodoState { todo, inProgress, done, all }

@@ -5,23 +5,26 @@ import 'package:todo/data/todo_dao.dart';
 import 'package:todo/data/todo_repository.dart';
 import 'package:todo/model/todo_model.dart';
 import 'package:intl/intl.dart';
-import 'package:fluttertoast/fluttertoast.dart';
+
 import 'package:todo/model/todo_state.dart';
 import 'package:todo/ui/add/add.dart';
 
 class TodoListPage extends StatefulWidget {
+  TodoState _state;
+  TodoListPage(this._state, {Key? key}) : super(key: key);
+
   @override
   State<StatefulWidget> createState() => _TodoListPageState();
 }
 
 class _TodoListPageState extends State<TodoListPage> {
   static const String TODO_DATE_FORMAT = 'yyyy-MM-dd HH:mm';
-  final TodoDao _todoDao = TodoDao();
-  final TodoBloc _todoBloc = TodoBloc(TodoRepository(TodoDao()));
-  bool isEdit = false;
+  late TodoBloc _todoBloc;
+  bool _isEdit = false;
 
   @override
   Widget build(BuildContext context) {
+    _todoBloc = TodoBloc(TodoRepository(TodoDao()), widget._state);
     return Scaffold(
       body: _createTodoListStreamBuilder(),
       floatingActionButton: _createFloatingButton(context),
@@ -80,7 +83,7 @@ class _TodoListPageState extends State<TodoListPage> {
       child: GestureDetector(
           onLongPress: () {
             setState(() {
-              isEdit = !isEdit;
+              _isEdit = !_isEdit;
             });
             log('long press');
           },
@@ -102,15 +105,15 @@ class _TodoListPageState extends State<TodoListPage> {
         GestureDetector(
           onTap: () {
             log('gesture onTap');
-            log('isEdit ' + isEdit.toString());
-            if (!isEdit) {
+            log('isEdit ' + _isEdit.toString());
+            if (!_isEdit) {
               _editTodo(todoModel);
             } else {
               _deleteTodo(todoModel);
             }
             // _deleteTodo(todoModel) : _editTodo();
           },
-          child: Icon(isEdit ? Icons.delete : Icons.keyboard_arrow_right,
+          child: Icon(_isEdit ? Icons.delete : Icons.keyboard_arrow_right,
               color: Colors.blue),
         ),
       ],

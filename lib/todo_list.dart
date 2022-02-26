@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:todo/model/todo_state.dart';
 import 'package:todo/todo_list_page.dart';
 
 class TodoListApp extends StatefulWidget {
@@ -8,9 +9,9 @@ class TodoListApp extends StatefulWidget {
 
 class _TodoListAppState extends State<TodoListApp> {
   final List<TabItem> _tabItems = [
-    TabItem("Todo", Icons.clear),
-    TabItem("In Progress", Icons.loop),
-    TabItem("Done", Icons.check)
+    TabItem("Todo", Icons.clear, TodoState.todo),
+    TabItem("In Progress", Icons.loop, TodoState.inProgress),
+    TabItem("Done", Icons.check, TodoState.done)
   ];
 
   int _currentTabIndex = 0;
@@ -28,7 +29,7 @@ class _TodoListAppState extends State<TodoListApp> {
         appBar: AppBar(
           title: Text(_tabItems[_currentTabIndex].getTitle()),
         ),
-        body: TodoListPage(),
+        body: TodoListPage(_tabItems[_currentTabIndex].getState()),
         bottomNavigationBar: _createBottomNavigationBar(),
       ),
     );
@@ -53,12 +54,15 @@ class _TodoListAppState extends State<TodoListApp> {
 class TabItem {
   late String _title;
   late IconData _icon;
+  late TodoState _state;
 
-  TabItem(String title, IconData icon) {
+  TabItem(String title, IconData icon, TodoState state) {
     _title = title;
     _icon = icon;
+    _state = state;
   }
 
   String getTitle() => _title;
   IconData getIcon() => _icon;
+  TodoState getState() => _state;
 }
