@@ -2,7 +2,8 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:todo/data/todo_bloc.dart';
-import 'package:todo/todo_model.dart';
+import 'package:todo/model/todo_model.dart';
+import 'package:todo/model/todo_state.dart';
 
 class AddPage extends StatefulWidget {
   TodoBloc _todoBloc;
@@ -22,15 +23,15 @@ class _AddPageState extends State<AddPage> {
     String title =
         widget._todoModel.getId() != null ? 'Update todo' : 'Add todo';
     return Scaffold(
-      appBar: AppBar(title: Text(title)),
-      body: _createTitleForm(),
-    );
+        appBar: AppBar(title: Text(title)), body: _createTitleForm());
   }
 
   Widget _createTitleForm() {
     final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
     TodoModel? _todoModel = widget._todoModel;
-    bool isEdit = _todoModel.getId() != null;
+    bool _isEdit = _todoModel.getId() != null;
+    TodoState _state = _todoModel.getTodoState();
+
     return Form(
       key: _formKey,
       child: Column(
@@ -69,6 +70,49 @@ class _AddPageState extends State<AddPage> {
             },
             initialValue: _todoModel.getDescription(),
           ),
+          Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Column(children: [
+                  Radio(
+                      value: TodoState.todo,
+                      groupValue: _state,
+                      onChanged: (TodoState? value) {
+                        setState(() {
+                          _state = value!;
+                          _todoModel.setTodoState(_state);
+                        });
+                      }),
+                  Text('To do')
+                ]),
+                Column(children: [
+                  Radio(
+                      value: TodoState.inProgress,
+                      groupValue: _state,
+                      onChanged: (TodoState? value) {
+                        log('set state ' + value.toString());
+                        setState(() {
+                          _state = value!;
+                          _todoModel.setTodoState(_state);
+                        });
+                      }),
+                  Text('In progress')
+                ]),
+                Column(children: [
+                  Radio(
+                      value: TodoState.done,
+                      groupValue: _state,
+                      onChanged: (TodoState? value) {
+                        log('set state ' + value.toString());
+                        setState(() {
+                          _state = value!;
+                          _todoModel.setTodoState(_state);
+                        });
+                      }),
+                  Text('Done')
+                ]),
+              ]),
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 16.0),
             child: ElevatedButton(
@@ -77,8 +121,8 @@ class _AddPageState extends State<AddPage> {
                 // the form is invalid.
                 if (_formKey.currentState!.validate()) {
                   // Process data.
-                  log('isEdit ' + isEdit.toString());
-                  if (isEdit) {
+                  log('isEdit ' + _isEdit.toString());
+                  if (_isEdit) {
                     _updateTodo(_todoModel);
                   } else {
                     _addNewTodo(_todoModel);
